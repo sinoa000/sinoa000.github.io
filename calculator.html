@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dragalia Target Summoning Success Chance Calculator</title>
+    <script>
+        rateNormal = 0.04751
+        rateGala = 0.06544
+        rateAdventurer = 0.005
+        rateDragon = 0.008
+        targetMax = 6
+
+        function setResource(resource) {
+            let value = parseInt(resource, 10)
+            if (value >= 1){
+                document.getElementById("resource").value = value
+            }
+        }
+
+        function setGala(){
+            document.getElementById("gala").checked = true
+        }
+
+        function setGalaNot(){
+            document.getElementById("gala").checked = false
+        }
+
+        function setQuickGala(){
+            setGala()
+            setAdventurerRate("target1")
+            for (let i=2; i<=targetMax; i++){
+                setClearRate("target" + i)
+            }
+        }
+
+        function setClearRate(id){
+            document.getElementById(id).value = null
+        }
+        
+        function setAdventurerRate(id){
+            document.getElementById(id).value = rateAdventurer
+        }
+
+        function setDragonRate(id){
+            document.getElementById(id).value = rateDragon
+        }
+
+        function calculate(){
+
+            const isGala = document.getElementById("gala").checked
+            const rate = isGala ? rateGala : rateNormal
+
+            const resource = document.getElementById("resource").value
+            const fiveStarCount = resource * rate
+
+            let target = []
+            for (let i=1; i<=targetMax; i++){
+                let id = "target" + i
+                let field = document.getElementById(id)
+                if (field != null && field.value > 0) {
+                    let v = field.value
+                    target.push(v)
+                }
+            }
+
+            let successRate = 1.000
+            for (let i=0; i<target.length; i++){
+                let rateLocal = target[i]*1.00 / rate
+                let rateFail = Math.pow(1.00-rateLocal, fiveStarCount)
+                let rateSuccess = 1.00 - rateFail
+                successRate = successRate * rateSuccess
+            }
+
+            let successRatePercent = successRate * 100
+            document.getElementById("successRate").value = successRatePercent.toFixed(3) + "%"
+        }
+
+        function clearAll() {
+            setResource(300)
+            setGalaNot()
+            for (let i=1; i<=targetMax; i++){
+                setClearRate("target" + i)
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <h1>Dragalia Target Summoning Success Chance Calculator</h1>
+
+    <table>
+        <tr>
+            <td>Rolls:</td>
+            <td><input type="number" id="resource" value="300"></td>
+            <td colspan="3">
+                <button onclick="setResource(100)">100</button>
+                <button onclick="setResource(200)">200</button>
+                <button onclick="setResource(300)">300</button>
+            </td>
+        </tr>
+        <tr>
+            <td>Gala:</td>
+            <td><input type="checkbox" id="gala"></td>
+            <td colspan="3">
+                <button onclick="setQuickGala()">Quick set Gala</button></td>
+            </td>
+        </tr>
+        <tr>
+            <td>Target 1:</td>
+            <td><input type="number" id="target1" value="0.005"></td>
+            <td><button onclick="setClearRate('target1')">Clear</button></td>
+            <td><button onclick="setAdventurerRate('target1')">Adventurer</button></td>
+            <td><button onclick="setDragonRate('target1')">Dragon</button></td>
+        </tr>
+        <tr>
+            <td>Target 2:</td>
+            <td><input type="number" id="target2" value="0.005"></td>
+            <td><button onclick="setClearRate('target2')">Clear</button></td>
+            <td><button onclick="setAdventurerRate('target2')">Adventurer</button></td>
+            <td><button onclick="setDragonRate('target2')">Dragon</button></td>
+        </tr>
+        <tr>
+            <td>Target 3:</td>
+            <td><input type="number" id="target3" value="0.008"></td>
+            <td><button onclick="setClearRate('target3')">Clear</button></td>
+            <td><button onclick="setAdventurerRate('target3')">Adventurer</button></td>
+            <td><button onclick="setDragonRate('target3')">Dragon</button></td>
+        </tr>
+        <tr>
+            <td>Target 4:</td>
+            <td><input type="number" id="target4"></td>
+            <td><button onclick="setClearRate('target4')">Clear</button></td>
+            <td><button onclick="setAdventurerRate('target4')">Adventurer</button></td>
+            <td><button onclick="setDragonRate('target4')">Dragon</button></td>
+        </tr>
+        <tr>
+            <td>Target 5:</td>
+            <td><input type="number" id="target5"></td>
+            <td><button onclick="setClearRate('target5')">Clear</button></td>
+            <td><button onclick="setAdventurerRate('target5')">Adventurer</button></td>
+            <td><button onclick="setDragonRate('target5')">Dragon</button></td>
+        </tr>
+        <tr>
+            <td>Target 6:</td>
+            <td><input type="number" id="target6"></td>
+            <td><button onclick="setClearRate('target6')">Clear</button></td>
+            <td><button onclick="setAdventurerRate('target6')">Adventurer</button></td>
+            <td><button onclick="setDragonRate('target6')">Dragon</button></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button onclick="calculate()">Calculate</button><br>
+            </td>
+            <td colspan="3">
+                <button onclick="clearAll()">Clear All</button>
+            </td>
+        </tr>
+        <tr>
+            <td>Success Rate:</td>
+            <td>
+                <input type="text" id="successRate" disabled value="00.000%"><br>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
