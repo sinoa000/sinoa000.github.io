@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dragalia Target Summoning Success Chance Calculator</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         rateNormal = 0.04751
         rateGala = 0.06544
@@ -12,37 +13,46 @@
 
         function setResource(resource) {
             let value = parseInt(resource, 10)
-            if (value >= 1){
-                document.getElementById("resource").value = value
-            }
+            document.getElementById("resource").value = value
+            calculate()
         }
 
-        function setGala(){
-            document.getElementById("gala").checked = true
-        }
-
-        function setGalaNot(){
-            document.getElementById("gala").checked = false
+        function setGala(boolean){
+            document.getElementById("gala").checked = boolean
+            calculate()
         }
 
         function setQuickGala(){
-            setGala()
+            setGala(true)
             setAdventurerRate("target1")
             for (let i=2; i<=targetMax; i++){
                 setClearRate("target" + i)
             }
         }
 
+        function setRate(id, value){
+            document.getElementById(id).value = value
+            calculate()
+        }
+
         function setClearRate(id){
-            document.getElementById(id).value = null
+            setRate(id, null)
         }
         
         function setAdventurerRate(id){
-            document.getElementById(id).value = rateAdventurer
+            setRate(id, rateAdventurer)
         }
 
         function setDragonRate(id){
-            document.getElementById(id).value = rateDragon
+            setRate(id, rateDragon)
+        }
+
+        function clearAll() {
+            setResource(300)
+            setGala(false)
+            for (let i=1; i<=targetMax; i++){
+                setClearRate("target" + i)
+            }
         }
 
         function calculate(){
@@ -75,15 +85,18 @@
             document.getElementById("successRate").value = successRatePercent.toFixed(3) + "%"
         }
 
-        function clearAll() {
-            setResource(300)
-            setGalaNot()
-            for (let i=1; i<=targetMax; i++){
-                setClearRate("target" + i)
-            }
-        }
-    </script>
+        $(document).ready(function (){
+            let inputs = document.querySelectorAll('input')
+            inputs.forEach(element => {
+                element.addEventListener('input', updateValue)
+                function updateValue(e){
+                    calculate()
+                }
+            })
 
+            calculate()
+        });
+    </script>
 </head>
 <body>
     <h1>Dragalia Target Summoning Success Chance Calculator</h1>
