@@ -11,9 +11,11 @@
         rateDragon = 0.008
         targetMax = 6
 
-        function setResource(resource) {
-            let value = parseInt(resource, 10)
-            document.getElementById("resource").value = value
+        function setRolls(rolls) {
+            let value = parseInt(rolls, 10)
+            document.getElementById("single").value = 0
+            document.getElementById("tenfold").value = 0
+            document.getElementById("wyrmmite").value = value * 120
             calculate()
         }
 
@@ -48,7 +50,7 @@
         }
 
         function clearAll() {
-            setResource(300)
+            setRolls(300)
             setGala(false)
             for (let i=1; i<=targetMax; i++){
                 setClearRate("target" + i)
@@ -60,8 +62,13 @@
             const isGala = document.getElementById("gala").checked
             const rate = isGala ? rateGala : rateNormal
 
-            const resource = document.getElementById("resource").value
-            const fiveStarCount = resource * rate
+            const single = parseInt(document.getElementById("single").value, 10)
+            const tenfold = parseInt(document.getElementById("tenfold").value, 10)
+            const wyrmmite = parseInt(document.getElementById("wyrmmite").value, 10)
+            const rolls = single + tenfold*10 + wyrmmite/120
+            document.getElementById("rolls").value = rolls
+
+            const fiveStarCount = rolls * rate
 
             let target = []
             for (let i=1; i<=targetMax; i++){
@@ -103,12 +110,21 @@
 
     <table>
         <tr>
+            <td>Single/Ten:</td>
+            <td><input type="number" id="single" value="100"></td>
+            <td colspan="3"><input type="number" id="tenfold" value="10"></td>
+        </tr>
+        <tr>
+            <td>Wyrmmite:</td>
+            <td><input type="number" id="wyrmmite" value="12000" step="120"></td>
+        </tr>
+        <tr>
             <td>Rolls:</td>
-            <td><input type="number" id="resource" value="300"></td>
+            <td><input type="number" id="rolls" value="300" disabled></td>
             <td colspan="3">
-                <button onclick="setResource(100)">100</button>
-                <button onclick="setResource(200)">200</button>
-                <button onclick="setResource(300)">300</button>
+                <button onclick="setRolls(100)">100</button>
+                <button onclick="setRolls(200)">200</button>
+                <button onclick="setRolls(300)">300</button>
             </td>
         </tr>
         <tr>
@@ -177,7 +193,7 @@
         </tr>
         <tr>
             <td>Last Update:</td>
-            <td colspan="5">22:00 22-01-2020</td>
+            <td colspan="5">22:00 23-01-2020</td>
         </tr>
     </table>
 </body>
