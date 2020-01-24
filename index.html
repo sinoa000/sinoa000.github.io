@@ -41,7 +41,9 @@
         }
 
         function setRate(id, value){
-            document.getElementById(id).value = value
+            let v = value * 100
+            if (v == 0) v = null
+            document.getElementById(id).value = v
             calculate()
         }
 
@@ -73,7 +75,7 @@
             const single = parseInt(document.getElementById("single").value, 10)
             const tenfold = parseInt(document.getElementById("tenfold").value, 10)
             const wyrmmite = parseInt(document.getElementById("wyrmmite").value, 10)
-            const rolls = single + tenfold*10 + wyrmmite/120
+            const rolls = single + tenfold*10.0 + wyrmmite/120.0
             document.getElementById("rolls").value = rolls
 
             const fiveStarCount = rolls * rate
@@ -83,7 +85,7 @@
                 let id = "target" + i
                 let field = document.getElementById(id)
                 if (field != null && field.value > 0) {
-                    let v = field.value
+                    let v = field.value / 100.0
                     target.push(v)
                 }
             }
@@ -143,43 +145,43 @@
             </td>
         </tr>
         <tr>
-            <td>Target 1:</td>
-            <td><input type="number" id="target1" value="0.005"></td>
+            <td>Target 1 (%):</td>
+            <td><input type="number" id="target1" step="0.1" value="0.5"></td>
             <td><button onclick="setClearRate('target1')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target1')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target1')">Dragon</button></td>
         </tr>
         <tr>
-            <td>Target 2:</td>
-            <td><input type="number" id="target2" value="0.005"></td>
+            <td>Target 2 (%):</td>
+            <td><input type="number" id="target2" step="0.1" value="0.5"></td>
             <td><button onclick="setClearRate('target2')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target2')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target2')">Dragon</button></td>
         </tr>
         <tr>
-            <td>Target 3:</td>
-            <td><input type="number" id="target3" value="0.008"></td>
+            <td>Target 3 (%):</td>
+            <td><input type="number" id="target3" step="0.1" value="0.8"></td>
             <td><button onclick="setClearRate('target3')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target3')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target3')">Dragon</button></td>
         </tr>
         <tr>
-            <td>Target 4:</td>
-            <td><input type="number" id="target4"></td>
+            <td>Target 4 (%):</td>
+            <td><input type="number" id="target4" step="0.1"></td>
             <td><button onclick="setClearRate('target4')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target4')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target4')">Dragon</button></td>
         </tr>
         <tr>
-            <td>Target 5:</td>
-            <td><input type="number" id="target5"></td>
+            <td>Target 5 (%):</td>
+            <td><input type="number" id="target5" step="0.1"></td>
             <td><button onclick="setClearRate('target5')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target5')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target5')">Dragon</button></td>
         </tr>
         <tr>
-            <td>Target 6:</td>
-            <td><input type="number" id="target6"></td>
+            <td>Target 6 (%):</td>
+            <td><input type="number" id="target6" step="0.1"></td>
             <td><button onclick="setClearRate('target6')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target6')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target6')">Dragon</button></td>
@@ -201,7 +203,7 @@
         </tr>
         <tr>
             <td>Last Update:</td>
-            <td colspan="5">12:00 24-01-2020</td>
+            <td colspan="5">20:00 24-01-2020</td>
         </tr>
     </table>
 </body>
