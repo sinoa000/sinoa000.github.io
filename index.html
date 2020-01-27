@@ -105,6 +105,9 @@
         $(document).ready(function (){
             let inputs = document.querySelectorAll('input')
             inputs.forEach(element => {
+
+                if (element.id == "rolls") return
+
                 element.addEventListener('input', updateValue)
                 function updateValue(e){
                     calculate()
@@ -130,7 +133,7 @@
         </tr>
         <tr>
             <td>Rolls:</td>
-            <td><input type="number" id="rolls" value="300" disabled></td>
+            <td><input type="number" id="rolls" value="300" onchange="setRolls(this.value)"></td>
             <td colspan="3">
                 <button onclick="setRolls(100)">100</button>
                 <button onclick="setRolls(200)">200</button>
@@ -203,7 +206,7 @@
         </tr>
         <tr>
             <td>Last Update:</td>
-            <td colspan="5">20:00 24-01-2020</td>
+            <td colspan="5">12:00 27-01-2020</td>
         </tr>
     </table>
 </body>
