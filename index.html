@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dragalia Target Summoning Success Chance Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-156923332-1"></script>
     <script>
@@ -102,7 +103,23 @@
             document.getElementById("successRate").innerText = successRatePercent.toFixed(3) + "%"
         }
 
+        function cloneTargetInput(id){
+            const idSource = "trTarget1"
+            const idTR = "trTarget" + id
+            const idInput = "target" + id
+
+            let tb = document.getElementById("tableCalculator")
+            let tr = document.getElementById(idSource)
+
+            let trNew = tr.cloneNode(true)
+            trNew.id = idTR
+            tb.appendChild(trNew)
+        }
+
         $(document).ready(function (){
+
+            // cloneTargetInput("9")
+
             let inputs = document.querySelectorAll('input')
             inputs.forEach(element => {
 
@@ -119,21 +136,26 @@
     </script>
 </head>
 <body>
-    <h1>Dragalia Target Summoning Success Chance Calculator</h1>
+    <h1>Dragalia Summoning Success Rate Calculator</h1>
 
-    <table>
+    <table id="tableCalculator">
         <tr>
             <td>Single/Ten:</td>
-            <td><input type="number" id="single" value="100"></td>
-            <td colspan="3"><input type="number" id="tenfold" value="10"></td>
+            <td><input onclick="this.select()" type="number"
+                       id="single" value="100"></td>
+            <td colspan="3">
+                <input onclick="this.select()" type="number"
+                       id="tenfold" value="10"></td>
         </tr>
         <tr>
             <td>Wyrmmite:</td>
-            <td><input type="number" id="wyrmmite" value="12000" step="120"></td>
+            <td><input onclick="this.select()" type="number"
+                       id="wyrmmite" value="12000" step="120"></td>
         </tr>
         <tr>
             <td>Rolls:</td>
-            <td><input type="number" id="rolls" value="300" onchange="setRolls(this.value)"></td>
+            <td><input onclick="this.select()" type="number"
+                       id="rolls" value="300" onchange="setRolls(this.value)"></td>
             <td colspan="3">
                 <button onclick="setRolls(100)">100</button>
                 <button onclick="setRolls(200)">200</button>
@@ -147,44 +169,50 @@
                 <button onclick="setQuickGala()">Quick set Gala</button></td>
             </td>
         </tr>
-        <tr>
-            <td>Target 1 (%):</td>
-            <td><input type="number" id="target1" step="0.1" value="0.5"></td>
+        <tr id="trTarget1">
+            <td>Target 1:</td>
+            <td><input onclick="this.select()" type="number"
+                       id="target1" step="0.1" value="0.5"></td>
             <td><button onclick="setClearRate('target1')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target1')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target1')">Dragon</button></td>
         </tr>
         <tr>
-            <td>Target 2 (%):</td>
-            <td><input type="number" id="target2" step="0.1" value="0.5"></td>
+            <td>Target 2:</td>
+            <td><input onclick="this.select()" type="number"
+                       id="target2" step="0.1" value="0.5"></td>
             <td><button onclick="setClearRate('target2')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target2')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target2')">Dragon</button></td>
         </tr>
         <tr>
-            <td>Target 3 (%):</td>
-            <td><input type="number" id="target3" step="0.1" value="0.8"></td>
+            <td>Target 3:</td>
+            <td><input onclick="this.select()" type="number"
+                       id="target3" step="0.1" value="0.8"></td>
             <td><button onclick="setClearRate('target3')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target3')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target3')">Dragon</button></td>
         </tr>
         <tr>
-            <td>Target 4 (%):</td>
-            <td><input type="number" id="target4" step="0.1"></td>
+            <td>Target 4:</td>
+            <td><input onclick="this.select()" type="number"
+                       id="target4" step="0.1"></td>
             <td><button onclick="setClearRate('target4')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target4')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target4')">Dragon</button></td>
         </tr>
         <tr>
-            <td>Target 5 (%):</td>
-            <td><input type="number" id="target5" step="0.1"></td>
+            <td>Target 5:</td>
+            <td><input onclick="this.select()" type="number"
+                       id="target5" step="0.1"></td>
             <td><button onclick="setClearRate('target5')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target5')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target5')">Dragon</button></td>
         </tr>
         <tr>
-            <td>Target 6 (%):</td>
-            <td><input type="number" id="target6" step="0.1"></td>
+            <td>Target 6:</td>
+            <td><input onclick="this.select()" type="number"
+                       id="target6" step="0.1"></td>
             <td><button onclick="setClearRate('target6')">Clear</button></td>
             <td><button onclick="setAdventurerRate('target6')">Adventurer</button></td>
             <td><button onclick="setDragonRate('target6')">Dragon</button></td>
@@ -196,7 +224,7 @@
             </td>
         </tr>
         <tr>
-            <td>Success Rate:</td>
+            <td>Success:</td>
             <td><p id="successRate" style="font-weight: bold; margin: 0">00.000%</p></td>
             <td colspan="3"><button onclick="calculate()">Calculate</button><br></td>
         </tr>
@@ -205,8 +233,8 @@
             <td colspan="5">reddit u/sinoa000</td>
         </tr>
         <tr>
-            <td>Last Update:</td>
-            <td colspan="5">12:00 27-01-2020</td>
+            <td>Update:</td>
+            <td colspan="5">17:00 27-01-2020 UTC+8</td>
         </tr>
     </table>
 </body>
