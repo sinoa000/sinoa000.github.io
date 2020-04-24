@@ -18,7 +18,7 @@
         rateGala = 0.06544
         rateAdventurer = 0.005
         rateDragon = 0.008
-        targetMax = 3
+        targetMax = 6
 
         function setRolls(rolls) {
             let value = parseInt(rolls, 10)
@@ -36,19 +36,25 @@
         function setQuickGala(){
             setGala(true)
             setAdventurerRate("target1")
-            for (let i=2; i<=targetMax*2; i++){
+            for (let i=2; i<=targetMax; i++){
                 setClearRate("target" + i)
             }
         }
 
         function setQuickSplit(){
             setGala(false)
-            for (let i=1; i<=targetMax*2; i++){
-                setClearRate("target" + i)
-            }
+            setClearRateAll()
             setAdventurerRate("target1")
             setDragonRate("target2")
-            setAdventurerRate("target" + (1+targetMax))
+            setAdventurerRate("target" + (targetMax/2 + 1))
+        }
+
+        function setReverse(chance){
+            let rate = getRate()
+            let targets = getTargets(rate)
+            let count = calculateReverse(targets, chance)
+            let rolls = count / rate
+            setRolls(rolls)
         }
 
         function setRate(id, value){
@@ -61,7 +67,13 @@
         function setClearRate(id){
             setRate(id, null)
         }
-        
+
+        function setClearRateAll() {
+            for (let i=1; i<=targetMax; i++){
+                setClearRate("target" + i)
+            }
+        }
+
         function setAdventurerRate(id){
             setRate(id, rateAdventurer)
         }
@@ -73,74 +85,112 @@
         function clearAll() {
             setRolls(300)
             setGala(false)
-            for (let i=1; i<=targetMax; i++){
-                setClearRate("target" + i)
-            }
+            setClearRateAll()
         }
 
         function calculate(){
-
-            const isGala = document.getElementById("gala").checked
-            const rate = isGala ? rateGala : rateNormal
-
             const single = parseInt(document.getElementById("single").value, 10)
             const tenfold = parseInt(document.getElementById("tenfold").value, 10)
             const wyrmmite = parseInt(document.getElementById("wyrmmite").value, 10)
             const rolls = single + tenfold*10.0 + wyrmmite/120.0
             document.getElementById("rolls").value = rolls
 
+            const rate = getRate()
             const fiveStarCount = rolls * rate
 
-            let targets1 = []
-            for (let i=1; i<=targetMax; i++){
-                let id = "target" + i
-                let field = document.getElementById(id)
-                if (field != null && field.value > 0) {
-                    let v = field.value / 100.0
-                    v = v * 1.00 / rate
-                    targets1.push(v)
-                }
-            }
+            let targets = getTargets(rate)
 
-            let targets2 = []
-            for (let i=1; i<=targetMax; i++){
-                let id = "target" + (i + targetMax)
-                let field = document.getElementById(id)
-                if (field != null && field.value > 0) {
-                    let v = field.value / 100.0
-                    v = v * 1.00 / rate
-                    targets2.push(v)
-                }
-            }
-
-            
-
-            let successRate = 0.00
-            
-            let max = 1000.0
-            let div = fiveStarCount / max
-            for (let i=0.00; i < max; i++){
-                n = (i+1) * div
-                                
-                let part = calculateBanner(targets1, n) - calculateBanner(targets1, n - div)
-                part = part * calculateBanner(targets2, fiveStarCount - n)
-                successRate = successRate + part
-            }
-            
+            let successRate = calculateSplit(targets, fiveStarCount)
             let successRatePercent = successRate * 100
             document.getElementById("successRate").innerText = successRatePercent.toFixed(3) + "%"
         }
 
         function calculateBanner(targets, count){
+            if (count <= 0) return 0.00
+
             let successRate = 1.000
             for (let i=0; i<targets.length; i++){
+                if (targets[i] <= 0) continue
+
                 let rateLocal = targets[i]
                 let rateFail = Math.pow(1.00-rateLocal, count)
                 let rateSuccess = 1.00 - rateFail
                 successRate = successRate * rateSuccess
             }
+            return successRate
+        }
+
+        function calculateSplit(targets, count){
+            let t1 = []
+            let t2 = []
+
+            for (let i=0; i<targets.length/2; i++){
+                if (targets[i] <= 0) continue
+                t1.push(targets[i])
+            }
+            for (let i=targets.length/2; i<targets.length; i++){
+                if (targets[i] <= 0) continue
+                t2.push(targets[i])
+            }
+
+            let successRate = 0.00
+
+            let max = 1000.0
+            let div = count / max
+            for (let i=0.00; i <= max; i++){
+                let n = i * div
+
+                let part = calculateBanner(t1, n) - calculateBanner(t1, n - div)
+                part = part * calculateBanner(t2, count - n)
+                successRate = successRate + part
+            }
 
             return successRate
+        }
+
+        function calculateReverse(targets, rate){
+            let step = 100
+            let min = 0
+            let max = min + step
+
+            while (calculateSplit(targets, max) < rate){
+                max = max + step
+            }
+
+            while (true){
+                let mid = (min + max) / 2
+                if (mid == min || mid == max) break
+
+                let r = calculateSplit(targets, mid)
+                if (r <= rate) {
+                    min = mid
+                } else {
+                    max = mid
+                }
+            }
+
+            return min
+        }
+
+        function getRate(){
+            const isGala = document.getElementById("gala").checked
+            const rate = isGala ? rateGala : rateNormal
+            return rate
+        }
+
+        function getTargets(rate){
+            let targets = []
+            for (let i=1; i<=targetMax; i++){
+                let id = "target" + i
+                let field = document.getElementById(id)
+                let v = 0.0
+                if (field != null && field.value > 0) {
+                    v = field.value
+                }
+                v = v / 100.0 / rate
+                targets.push(v)
+            }
+            return targets
         }
 
         function cloneTargetInput(id){
@@ -262,12 +312,18 @@
             <td colspan="2"></td>
             <td colspan="3">
                 <button onclick="clearAll()">Clear All</button>
+                <button onclick="calculate()">Calculate</button>
             </td>
         </tr>
         <tr>
             <td>Success:</td>
             <td><p id="successRate" style="font-weight: bold; margin: 0">00.000%</p></td>
-            <td colspan="3"><button onclick="calculate()">Calculate</button><br></td>
+            <td colspan="3">
+                <button onclick="setReverse(0.25)">25%</button>
+                <button onclick="setReverse(0.50)">50%</button>
+                <button onclick="setReverse(0.75)">75%</button>
+                <button onclick="setReverse(0.90)">90%</button>
+            </td>
         </tr>
         <tr>
             <td>Author:</td>
