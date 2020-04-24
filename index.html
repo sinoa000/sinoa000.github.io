@@ -36,9 +36,19 @@
         function setQuickGala(){
             setGala(true)
             setAdventurerRate("target1")
-            for (let i=2; i<=targetMax; i++){
+            for (let i=2; i<=targetMax*2; i++){
                 setClearRate("target" + i)
             }
+        }
+
+        function setQuickSplit(){
+            setGala(false)
+            for (let i=1; i<=targetMax*2; i++){
+                setClearRate("target" + i)
+            }
+            setAdventurerRate("target1")
+            setDragonRate("target2")
+            setAdventurerRate("target" + (1+targetMax))
         }
 
         function setRate(id, value){
@@ -196,7 +206,8 @@
             <td>Gala:</td>
             <td><input type="checkbox" id="gala"></td>
             <td colspan="3">
-                <button onclick="setQuickGala()">Quick set Gala</button></td>
+                <button onclick="setQuickGala()">Quick Gala</button>
+                <button onclick="setQuickSplit()">Quick Split</button>
             </td>
         </tr>
         <tr id="trTarget1">
@@ -264,7 +275,7 @@
         </tr>
         <tr>
             <td>Update:</td>
-            <td colspan="5">12:00 23-04-2020 UTC+8</td>
+            <td colspan="5">10:00 24-04-2020 UTC+8</td>
         </tr>
     </table>
 </body>
